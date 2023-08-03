@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import Card from './components/Card.vue'
+import Error from './components/Error.vue'
 
+const errorState = ref(false);
 const characters = ref([]);
 const colours = ref([]);
 
@@ -9,23 +11,31 @@ onMounted(async () => {
     Promise.all([getData(characters, "https://swapi.dev/api/people/"), getCount("https://swapi.dev/api/species/", generateColours)]);
 });
 
+//Get data, keep getting until there is no more to get
 async function getData(dataArray, url) {
   let completed = false;
   do {
-    var response = await fetch(url);
-    var page = await response.json();
+    try {
+      var response = await fetch(url);
+      var page = await response.json();
 
-    dataArray.value = dataArray.value.concat(page.results);
-    console.log(dataArray.value);
+      dataArray.value = dataArray.value.concat(page.results);
 
-    if (page.next !== null) {
-      url = page.next;
+      if (page.next !== null) {
+        url = page.next;
+      }
+
+      completed = page.next === null;
+    } catch (error) {
+      console.error(error.message);
+      completed = true;
+      errorState.value = true;
     }
-    completed = page.next === null;
 
   } while (completed === false);
 }
 
+//Get the record count and use the callback
 async function getCount(url, callback) {
   var response = await fetch(url);
   var data = await response.json();
@@ -57,7 +67,8 @@ function getSpeciesColor(species) {
 </script>
 
 <template>
-  <Card v-for="character in characters" :character="character" :color="getSpeciesColor(character.species)"/>
+  <Error v-show="errorState" :message="'Error retrieving data'"/>
+  <Card v-show="errorState === false" v-for="character in characters" :character="character" :color="getSpeciesColor(character.species)"/>
 </template>
 
 <style scoped>

@@ -44,7 +44,8 @@ const createdDate = computed(() => {
 <style scoped>
     .card {
         background-color: hsl(v-bind(color) 100% 25%);
-        height: 12.5rem;
+        border-radius: 8px;
+        height: 14rem;
         overflow: hidden;
         padding: .5rem;
         width: 9.375rem;
