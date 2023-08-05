@@ -84,10 +84,11 @@ function closeModal() {
         width: 14rem;
     }
 
-    .card.characger-card:hover {
+    .card.character-card:hover {
         box-shadow: 0 10px 24px hsla(0, 0%, 0%, .2);
         transform: scale(1.1, 1.1);
         transition: transform 150ms ease-in;
+        z-index: 20;
     }
 
     .border-one, .border-two {
