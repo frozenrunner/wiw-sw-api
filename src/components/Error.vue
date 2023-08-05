@@ -13,9 +13,9 @@ const props = defineProps({
 
 <style scoped>
     .error {
-        display: fixed;
         grid-column: 1 / -1;
-        height: 20rem;
-        width: 20rem;
+        height: 100%;
+        width: 100%;
+        text-align: center;
     }
 </style>

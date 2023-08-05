@@ -1,15 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import Card from './components/Card.vue'
+import Character from './components/Character.vue'
 import Error from './components/Error.vue'
 
 const errorState = ref(false);
 const characters = ref([]);
 const colours = ref([]);
-
-onMounted(async () => {
-    Promise.all([getData(characters, "https://swapi.dev/api/people/"), getCount("https://swapi.dev/api/species/", generateColours)]);
-});
 
 //Get data, keep getting until there is no more to get
 async function getData(dataArray, url) {
@@ -19,7 +15,20 @@ async function getData(dataArray, url) {
       var response = await fetch(url);
       var page = await response.json();
 
-      dataArray.value = dataArray.value.concat(page.results);
+      if (dataArray.value.length === 0) { //init the collection to set the loading state
+        dataArray.value = Array(page.count).fill({
+          name: "Loading",
+          height: 0,
+          mass: 0,
+          created: "1900-01-01",
+          films: [],
+          birth_year: ""
+        });
+      }
+
+      //swap out the loading cards for character cards
+      const firstNullIndex = dataArray.value.findIndex((e) => e.name === "Loading");
+      dataArray.value.splice(firstNullIndex, page.results.length, ...page.results);
 
       if (page.next !== null) {
         url = page.next;
@@ -54,7 +63,14 @@ function generateColours(total) {
     }
 }
 
-function getSpeciesColor(species) {
+//Get the species colour for the given species index
+function getSpeciesColor(character) {
+  if (character === null || character.species === undefined || character.species === null) {
+    return colours.value[0];
+  }
+
+  const species = character.species;
+
   if (species.length === 0) {
     return colours.value[0];
   }
@@ -64,24 +80,12 @@ function getSpeciesColor(species) {
   return speciesColour;
 }
 
+onMounted(async () => {
+    Promise.all([getData(characters, "https://swapi.dev/api/people/"), getCount("https://swapi.dev/api/species/", generateColours)]);
+});
 </script>
 
 <template>
   <Error v-show="errorState" :message="'Error retrieving data'"/>
-  <Card v-show="errorState === false" v-for="character in characters" :character="character" :color="getSpeciesColor(character.species)"/>
+  <Character v-show="errorState === false" v-for="character in characters" :character="character" :color="getSpeciesColor(character)"/>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
