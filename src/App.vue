@@ -63,7 +63,7 @@ function generateColours(total) {
     }
 }
 
-//Get the species colour for the given species index
+//Get the species colour for the given species index, default to human
 function getSpeciesColor(character) {
   if (character === null || character.species === undefined || character.species === null) {
     return colours.value[0];

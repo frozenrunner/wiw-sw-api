@@ -13,6 +13,7 @@ const loading = computed(() => {
     return props.character.name === "Loading";
 });
 
+/*computed*/
 const heightInMetres = computed(() => {
     if (props.character.height === undefined || props.character.height === null) {
         return 0;
@@ -45,6 +46,7 @@ const createdDate = computed(() => {
     return date;
 });
 
+/*methods*/
 function openModal() {
     modalOpen.value = true;
 }

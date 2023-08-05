@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import Error from "./Error.vue"
+
 const props = defineProps({
     homeworld: String,
     open: {
@@ -19,10 +20,16 @@ const homeworldData = ref({
     residents: []
 });
 
+/*computed*/
 const loading = computed(() => {
     return homeworldData.value.name === "Loading";
 });
 
+const numberOfResidents = computed(() => {
+    return homeworldData.value.residents.length;
+});
+
+/*functions*/
 async function getHomeworld(url) {
     if (url !== null && url !== undefined) {
         try {
@@ -34,10 +41,6 @@ async function getHomeworld(url) {
         }
     }
 }
-
-const numberOfResidents = computed(() => {
-    return homeworldData.value.residents.length;
-});
 
 onMounted(async () => await getHomeworld(props.homeworld));
 </script>
