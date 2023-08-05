@@ -56,8 +56,8 @@ async function getCount(url, callback) {
 
 //Generate colour values based on the number of species to at least attempt some kind of separation
 function generateColours(total) {
-    var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-    for (var x=0; x<total; x++)
+    const i = 360 / (total - 1); // distribute the colors evenly on the hue range
+    for (let x=0; x<total; x++)
     {
       colours.value.push(i * x);
     }
